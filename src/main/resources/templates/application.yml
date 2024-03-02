@@ -1,0 +1,36 @@
+server:
+  port: 8484
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+        globally_quoted_identifiers_skip_column_definitions: true
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/document_management?useUnicode=true&autoReconnect=true&&failOverReadOnly=false&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Tehran
+    username: root
+    password: root
+    driverClassName: com.mysql.cj.jdbc.Driver
+
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: lazy
+
+    mongodb:
+      host: 127.0.0.1
+      port: 27017
+      authentication-database: admin
+      username: admin
+      password: admin
+      database: test
+
