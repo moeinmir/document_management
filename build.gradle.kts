@@ -65,16 +65,10 @@ val coroutinesVersion = "1.5.2"
 
 dependencies {
     implementation("com.sts:common:0.0.114")
-    implementation("redis.clients:jedis:4.3.1")
-    implementation("org.springframework.boot:spring-boot-starter-mail")
-    implementation("org.springframework.kafka:spring-kafka")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.security:spring-security-test")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.data:spring-data-redis:3.2.0")
     implementation ("io.micrometer:micrometer-registry-prometheus")
     implementation("io.micrometer:micrometer-core")
     implementation("org.modelmapper:modelmapper:2.1.1")
@@ -83,7 +77,6 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-
 }
 
 tasks.withType<Test> {
@@ -137,7 +130,7 @@ jib {
         }
     }
     container {
-        ports = listOf("8484")
+        ports = listOf("9090")
         volumes = listOf("/logs")
     }
     setAllowInsecureRegistries(true)
