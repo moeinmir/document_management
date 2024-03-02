@@ -1,4 +1,9 @@
 package com.sts.document_management.persistence.sql.repository
 
-interface DocumentTypeRepository {
+import com.sts.document_management.persistence.sql.model.DocumentType
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface DocumentTypeRepository:JpaRepository<DocumentType,Long> {
 }

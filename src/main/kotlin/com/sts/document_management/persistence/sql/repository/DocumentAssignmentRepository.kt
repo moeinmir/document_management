@@ -1,4 +1,10 @@
 package com.sts.document_management.persistence.sql.repository
 
-interface DocumentAssignmentRepository {
+import com.sts.document_management.persistence.sql.model.DocumentAssignment
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+
+
+@Repository
+interface DocumentAssignmentRepository:JpaRepository<DocumentAssignment,Long> {
 }
