@@ -1,32 +1,30 @@
 package com.sts.document_management.persistence.sql.model
 
-import com.sts.common.constant.RelatedObjectType
+
+import com.sts.document_management.constant.ObjectStatus
 import jakarta.persistence.*
+import java.time.ZonedDateTime
 
 @Entity
 data class DocumentAssignment(
 
-    @ManyToOne
-    @JoinColumn(name = "document_id", nullable = false)
-    val document: Document,
+    val documentId: String,
 
-    val assignedById: Long,
+    val assignedById: String,
 
-    val assignedByEmail: String,
+    val assignedAt: ZonedDateTime,
 
-    val isDeleted: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    val status: ObjectStatus = ObjectStatus.ACTIVE,
 
-    val deletedById: Long?,
-
-    val deletedByEmail: String?,
-
-    val assigneeId: Long,
-
-    val objectType: RelatedObjectType
-
+    val assigneeId: String
     ) {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: String? = null;
+
+    @ManyToOne
+    @JoinColumn(name = "document_type_id", nullable = false)
+    lateinit var documentType: DocumentType
+
 }

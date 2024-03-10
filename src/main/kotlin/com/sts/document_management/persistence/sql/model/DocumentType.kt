@@ -1,6 +1,8 @@
 package com.sts.document_management.persistence.sql.model
 
-import com.sts.common.constant.RelatedObjectType
+
+import com.sts.document_management.constant.DocumentGroup
+import com.sts.document_management.constant.ObjectStatus
 import jakarta.persistence.*
 import java.time.ZonedDateTime
 
@@ -9,30 +11,22 @@ data class DocumentType(
 
     val name:String,
 
-    val description: String? = null,
+    var description: String? = null,
 
+    val documentGroup: String,
 
-    @Enumerated(EnumType.STRING)
-    val objectType: RelatedObjectType? = null,
-
-    val createdById: Long,
-
-    val createdByEmail: String,
+    val createdById: String,
 
     val createdAt: ZonedDateTime,
 
-    var isDeleted: Boolean = false,
+    @Enumerated(EnumType.STRING)
+    val status: ObjectStatus = ObjectStatus.ACTIVE,
 
-    val updatedById: String? = null,
+    var documentTemplateFileId: String? = null,
 
-    val updatedByEmail: String? = null,
-
-    val updatedAt: ZonedDateTime? = null
-
-
+    val isMandatory: Boolean
 ) {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: String? = null
 }

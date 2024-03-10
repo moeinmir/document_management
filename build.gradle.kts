@@ -64,7 +64,7 @@ repositories {
 val coroutinesVersion = "1.5.2"
 
 dependencies {
-    implementation("com.sts:common:0.0.114")
+    implementation("com.sts:common:0.0.121")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-api:2.1.0")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
@@ -77,6 +77,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus")
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    implementation("io.github.lognet:grpc-spring-boot-starter:5.1.4")
 }
 
 tasks.withType<Test> {

@@ -1,39 +1,28 @@
 package com.sts.document_management.persistence.sql.model
 
+import com.sts.document_management.constant.ObjectStatus
 import jakarta.persistence.*
 import java.time.ZonedDateTime
 
 @Entity
 data class DocumentTypeAttribute(
 
-
-    @ManyToOne
-    @JoinColumn(name = "document_type_id", nullable = false)
-    val documentType: DocumentType,
-
-    val createdById: Long,
-
-    val createdByEmail: String,
-
+    val createdById: String,
     val createdAt: ZonedDateTime,
 
-    val isDeleted: Boolean = false,
-
-    val deletedById: Long? = null,
-
-    val deletedByEmail: String? = null,
-
-    val deletedAt: ZonedDateTime? = null,
-
+    @Enumerated(EnumType.STRING)
+    val status: ObjectStatus = ObjectStatus.ACTIVE,
     val attributeName: String,
-
-    val attributeDescription: String? = null
-
-
-) {
-
+    var attributeDescription: String? = null,
+    val isMandatory: Boolean = false,
+    var attributeType: String? = null,
+    var convertRegex: String? = null
+    ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null
+    @GeneratedValue(strategy = GenerationType.UUID)
+    var id: String? = null;
+    @ManyToOne
+    @JoinColumn(name = "document_type_id", nullable = false)
+    lateinit var documentType: DocumentType
 
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface DocumentAssignmentRepository:JpaRepository<DocumentAssignment,Long> {
+interface DocumentAssignmentRepository:JpaRepository<DocumentAssignment,String> {
 }

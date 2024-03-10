@@ -31,8 +31,12 @@ spring:
 
   flyway:
     url: jdbc:mysql://localhost:3306/document_management
-    locations: classpath:db/migration
+    locations: classpath:db.migration
     user: root
     password: root
     default-schema: document_management
     baseline-on-migrate: true
+
+
+grpc:
+  port: 6570

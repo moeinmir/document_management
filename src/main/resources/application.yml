@@ -3,3 +3,14 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+
+
+messages:
+  document-type-service:
+    document-type-not-found: "document type not found"
+    document-type-not-active: "document type is not active"
+
+codes:
+  document-type=service:
+    document-type-not-found: 404
+    document-type-not-active: 412
