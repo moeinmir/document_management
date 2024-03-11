@@ -31,5 +31,4 @@ class DocumentAssignmentServiceGrpc(private val mapper: Mapper): DocumentAssignm
         responseObserver.onNext(response)
         responseObserver.onCompleted()
     }
-
 }

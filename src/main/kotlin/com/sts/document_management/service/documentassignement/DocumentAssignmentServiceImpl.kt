@@ -23,6 +23,18 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
     @Value("\${codes.document-assignment-service.already-assigned}")
     val alreadyAssignedCode: Int? = null
 
+    @Value("\${messages.document-assignment-service.assignment-not-found}")
+    val assignmentNotFoundMessage: String? = null
+
+    @Value("\${codes.document-assignment-service.assignment-not-found}")
+    val assignmentNotFoundCode: Int? = null
+
+    @Value("\${messages.document-assignment-service.assignment-not-active}")
+    val assignmentNotActive: String? = null
+
+    @Value("\${codes.document-assignment-service.assignment-not-active}")
+    val assignmentNotActiveCode: Int? = null
+
     override fun save(documentAssignment: DocumentAssignment): DocumentAssignment? {
         if (documentAssignmentRepository.existsByDocumentIdAndAssigneeIdAndStatus(
                 documentAssignment.documentId,
@@ -61,10 +73,24 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
     override fun <T> findActiveDocumentAssignmentById(documentAssignmentId: String, responseObserver: StreamObserver<T>): DocumentAssignment? {
         val documentAssignment = documentAssignmentRepository.findById(documentAssignmentId)
         if (!documentAssignment.isPresent){
+            val status = Status.NOT_FOUND.withDescription(
+                Helper.concatenateErrorMessageAndCode(
+                    assignmentNotFoundMessage!!,
+                    assignmentNotFoundCode!!
+                )
+            )
+            responseObserver.onError(StatusException(status))
             return null
         }
         val fetchedDocumentAssignment = documentAssignment.get()
         if(fetchedDocumentAssignment.status != ObjectStatus.ACTIVE){
+            val status = Status.NOT_FOUND.withDescription(
+                Helper.concatenateErrorMessageAndCode(
+                    assignmentNotFoundMessage!!,
+                    assignmentNotActiveCode!!
+                )
+            )
+            responseObserver.onError(StatusException(status))
             return null
         }
         return fetchedDocumentAssignment

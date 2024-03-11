@@ -12,8 +12,12 @@ messages:
     already-exist: "document type with this name and status and group already exist"
   document-attribute-service:
     already-exist: "document attribute for this type and name is already active"
+    attribute-not-found: "document attribute not found"
   document-assignment-service:
     already-assigned: "this doc is already assigned to this assignee and the status is active"
+    assignment-not-found: "no active document assignment found"
+    assignment-not-active: "document assignment is not active"
+
 
 codes:
   document-type=service:
@@ -22,5 +26,8 @@ codes:
     already-exist: 403
   document-attribute-service:
     already-exist: 403
+    attribute-not-found: 404
   document-assignment-service:
     already-assigned: 403
+    assignment-not-found: 404
+    assignment-not-active: 412

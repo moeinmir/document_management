@@ -7,7 +7,7 @@ CREATE TABLE `document_type_attribute` (
                                            `created_at` datetime(6) DEFAULT NULL,
                                            `created_by_id` varchar(255) DEFAULT NULL,
                                            `is_mandatory` bit(1) NOT NULL,
-                                           `object_status` enum('ACTIVE','DELETED') DEFAULT NULL,
+                                           `status` enum('ACTIVE','INACTIVE','DELETED') DEFAULT NULL,
                                            `document_type_id` varchar(255) NOT NULL,
                                            PRIMARY KEY (`id`),
                                            KEY `FK75q5qwqp89evf11iifama59in` (`document_type_id`),

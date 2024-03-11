@@ -19,7 +19,6 @@ class DocumentTemplateServiceGrpc: DocumentTemplateServiceGrpc.DocumentTemplateS
         responseObserver: StreamObserver<Documentmanagement.FillTemplateResponse>
     ) {
 
-
         val filledTemplate = documentTemplateService.fillTemplate(
             request.pairsMap,
             request.documentAssignmentId,

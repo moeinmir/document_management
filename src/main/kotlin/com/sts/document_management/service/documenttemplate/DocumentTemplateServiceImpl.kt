@@ -1,17 +1,18 @@
 package com.sts.document_management.service.documenttemplate
 
+import com.sts.common.utils.Helper
 import com.sts.document_management.persistence.sql.model.DocumentAttributeHistory
-import com.sts.document_management.persistence.sql.model.DocumentTypeAttribute
 import com.sts.document_management.service.documentassignement.DocumentAssignmentService
 import com.sts.document_management.service.documentattributehistory.DocumentAttributeHistoryService
 import com.sts.document_management.service.documenttypeattribute.DocumentTypeAttributeService
 import io.grpc.Status
+import io.grpc.StatusException
 import io.grpc.stub.StreamObserver
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.bson.Document
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
 import org.springframework.data.mongodb.core.query.Update
@@ -33,6 +34,13 @@ class DocumentTemplateServiceImpl:DocumentTemplateService {
     @Autowired
     lateinit var documentAttributeHistoryService: DocumentAttributeHistoryService;
 
+    @Value("\${messages.document-attribute-service.attribute-not-found}")
+    val attributeNotFoundMessage: String? = null
+
+    @Value("\${codes.document-attribute-service.attribute-not-found}")
+    val attributeNotFoundCode: Int? = null
+
+    @Transactional
     override fun  <T> fillTemplate(template: Map<String, String>, assignmentId: String,createdById:String, responseObserver: StreamObserver<T>):Document? {
         val document = Document(template)
 //        val document = Document()
@@ -45,7 +53,7 @@ class DocumentTemplateServiceImpl:DocumentTemplateService {
             if (attribute != null) {
                 val documentAttributeHistory = DocumentAttributeHistory(
                     documentAssignment = documentAssignment,
-                    documentTypeAttribute = attribute!!,
+                    documentTypeAttribute = attribute,
                     filledAt = ZonedDateTime.now(),
                     filledById = createdById,
                     attributeValue = value
@@ -53,10 +61,13 @@ class DocumentTemplateServiceImpl:DocumentTemplateService {
                 documentAttributeHistoryService.save(documentAttributeHistory)
                 document[attribute.attributeName] = value
             } else {
-                responseObserver.onError(
-                    Status.INVALID_ARGUMENT
-                    .withDescription("Attribute with ID $key not found")
-                    .asRuntimeException())
+                val status = Status.NOT_FOUND.withDescription(
+                    Helper.concatenateErrorMessageAndCode(
+                        attributeNotFoundMessage!!,
+                        attributeNotFoundCode!!
+                    )
+                )
+                responseObserver.onError(StatusException(status))
                 return null
             }
         }

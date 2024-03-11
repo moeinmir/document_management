@@ -3,7 +3,6 @@ package com.sts.document_management.persistence.sql.model
 
 import jakarta.persistence.*
 import java.time.ZonedDateTime
-import java.util.UUID
 
 @Entity
 data class DocumentAttributeHistory(
@@ -15,8 +14,6 @@ data class DocumentAttributeHistory(
     @ManyToOne
     @JoinColumn(name = "document_assignment_id", nullable = false)
     val documentAssignment: DocumentAssignment,
-
-
 
     val filledById: String,
 
