@@ -9,8 +9,18 @@ messages:
   document-type-service:
     document-type-not-found: "document type not found"
     document-type-not-active: "document type is not active"
+    already-exist: "document type with this name and status and group already exist"
+  document-attribute-service:
+    already-exist: "document attribute for this type and name is already active"
+  document-assignment-service:
+    already-assigned: "this doc is already assigned to this assignee and the status is active"
 
 codes:
   document-type=service:
     document-type-not-found: 404
     document-type-not-active: 412
+    already-exist: 403
+  document-attribute-service:
+    already-exist: 403
+  document-assignment-service:
+    already-assigned: 403

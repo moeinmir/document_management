@@ -25,7 +25,7 @@ class DocumentTypeAttributeServiceGrpc(private val mapper: Mapper): DocumentType
         val documentType = documentTypeService.getDocumentType(request.documentTypeId,responseObserver) ?: return
         val documentTypeAttribute = mapper.map(request,DocumentTypeAttribute::class)
         documentTypeAttribute.documentType = documentType
-        documentTypeAttributeService.save(documentTypeAttribute)
+        documentTypeAttributeService.save(documentTypeAttribute,responseObserver)?:return
         val response = mapper.map(documentTypeAttribute,Documentmanagement.AddDocumentTypeAttributeResponse::class)
         responseObserver.onNext(response)
         responseObserver.onCompleted()

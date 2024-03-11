@@ -12,7 +12,11 @@ data class DocumentAttributeHistory(
     @JoinColumn(name = "document_type_attribute_id", nullable = false)
     val documentTypeAttribute: DocumentTypeAttribute,
 
-    val assigneeId: String,
+    @ManyToOne
+    @JoinColumn(name = "document_assignment_id", nullable = false)
+    val documentAssignment: DocumentAssignment,
+
+
 
     val filledById: String,
 

@@ -19,7 +19,7 @@ class DocumentTypeServiceGrpc(private val mapper: Mapper): DocumentTypeServiceNe
         responseObserver: StreamObserver<Documentmanagement.AddDocumentTypeResponse>
     ) {
         val documentType = mapper.map(request,DocumentType::class)
-        documentTypeService.save(documentType)
+        documentTypeService.save(documentType,responseObserver)?:return
         val response = mapper.map(documentType,Documentmanagement.AddDocumentTypeResponse::class)
         responseObserver.onNext(response)
         responseObserver.onCompleted()

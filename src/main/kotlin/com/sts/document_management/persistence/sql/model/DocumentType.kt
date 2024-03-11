@@ -1,7 +1,6 @@
 package com.sts.document_management.persistence.sql.model
 
 
-import com.sts.document_management.constant.DocumentGroup
 import com.sts.document_management.constant.ObjectStatus
 import jakarta.persistence.*
 import java.time.ZonedDateTime

@@ -27,10 +27,34 @@ class DocumentTypeServiceImpl : DocumentTypeService {
     @Value("\${messages.document-type-service.document-type-not-active}")
     val documentTypeNotActiveMessage: String? = null
 
+    @Value("\${messages.document-type-service.already-exist}")
+    val alreadyExistMessage: String? = null
+
+    @Value("\${codes.document-type=service.already-exist}")
+    val alreadyExistCode: Int? = null
+
     @Value("\${codes.document-type=service.document-type-not-active}")
     val documentTypeNotActiveCode: Int? = null
 
-    override fun save(documentType: DocumentType): DocumentType {
+    override fun save(documentType: DocumentType): DocumentType? {
+
+        if(documentTypeRepository.existsByNameAndDocumentGroupAndStatus(documentType.name,documentType.documentGroup,documentType.status)){
+            return null
+        }
+        return documentTypeRepository.save(documentType)
+    }
+
+    override fun <T> save(documentType: DocumentType, responseObserver: StreamObserver<T>): DocumentType? {
+        if(documentTypeRepository.existsByNameAndDocumentGroupAndStatus(documentType.name,documentType.documentGroup,documentType.status)){
+            val status = Status.NOT_FOUND.withDescription(
+                Helper.concatenateErrorMessageAndCode(
+                    alreadyExistMessage!!,
+                    alreadyExistCode!!
+                )
+            )
+            responseObserver.onError(StatusException(status))
+            return null
+        }
         return documentTypeRepository.save(documentType)
     }
 

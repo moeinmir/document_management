@@ -6,7 +6,9 @@ import io.grpc.stub.StreamObserver
 
 interface DocumentTypeService {
 
-    fun save(documentType: DocumentType):DocumentType
+    fun save(documentType: DocumentType):DocumentType?
+
+    fun <T> save(documentType: DocumentType,responseObserver: StreamObserver<T>):DocumentType?
 
     fun <T> getDocumentType (id:String,responseObserver: StreamObserver<T>):DocumentType?
 
