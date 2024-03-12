@@ -12,43 +12,54 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class DocumentTypeAttributeServiceImpl:DocumentTypeAttributeService {
+class DocumentTypeAttributeServiceImpl : DocumentTypeAttributeService {
 
     @Autowired
     lateinit var documentTypeAttributeRepository: DocumentTypeAttributeRepository;
 
     @Value("\${messages.document-attribute-service.already-exist}")
-    val alreadyExistMessage:String? = null
+    val alreadyExistMessage: String? = null
 
     @Value("\${codes.document-attribute-service.already-exist}")
     val alreadyExistCode: Int? = null
 
     override fun save(documentTypeAttribute: DocumentTypeAttribute): DocumentTypeAttribute? {
-        if(documentTypeAttributeRepository.existsByAttributeNameAndStatusAndDocumentType(
-                documentTypeAttribute.attributeName,
+        documentTypeAttributeRepository.findByAttributeNameAndStatusAndDocumentType(
+            documentTypeAttribute.attributeName,
             documentTypeAttribute.status,
             documentTypeAttribute.documentType
-        )){
+        )?.let { fetchedDocumentTypeAttribute ->
+            documentTypeAttribute.id?.let {
+                if (it != fetchedDocumentTypeAttribute.id) {
+                    return null
+                }
+            }
             return null
         }
         return documentTypeAttributeRepository.save(documentTypeAttribute)
     }
 
-    override fun <T> save(documentTypeAttribute: DocumentTypeAttribute, responseObserver: StreamObserver<T>): DocumentTypeAttribute? {
-        if(documentTypeAttributeRepository.existsByAttributeNameAndStatusAndDocumentType(
-                documentTypeAttribute.attributeName,
-                documentTypeAttribute.status,
-                documentTypeAttribute.documentType
-            )){
-
-            val status = Status.NOT_FOUND.withDescription(
-                Helper.concatenateErrorMessageAndCode(
-                    alreadyExistMessage!!,
-                    alreadyExistCode!!
-                )
-            )
-            responseObserver.onError(StatusException(status))
-            return null
+    override fun <T> save(
+        documentTypeAttribute: DocumentTypeAttribute,
+        responseObserver: StreamObserver<T>
+    ): DocumentTypeAttribute? {
+        documentTypeAttributeRepository.findByAttributeNameAndStatusAndDocumentType(
+            documentTypeAttribute.attributeName,
+            documentTypeAttribute.status,
+            documentTypeAttribute.documentType
+        )?.let { fetchedDocumentTypeAttribute ->
+            documentTypeAttribute.id?.let {
+                if (it != fetchedDocumentTypeAttribute.id) {
+                    val status = Status.NOT_FOUND.withDescription(
+                        Helper.concatenateErrorMessageAndCode(
+                            alreadyExistMessage!!,
+                            alreadyExistCode!!
+                        )
+                    )
+                    responseObserver.onError(StatusException(status))
+                    return null
+                }
+            }
         }
         return documentTypeAttributeRepository.save(documentTypeAttribute)
     }

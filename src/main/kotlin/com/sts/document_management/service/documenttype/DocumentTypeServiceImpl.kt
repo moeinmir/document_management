@@ -2,7 +2,9 @@ package com.sts.document_management.service.documenttype
 
 
 import com.sts.common.utils.Helper
-import com.sts.document_management.constant.ObjectStatus
+
+
+import com.sts.common.constant.ObjectStatus
 import com.sts.document_management.persistence.sql.model.DocumentType
 import com.sts.document_management.persistence.sql.repository.DocumentTypeRepository
 import io.grpc.Status
@@ -38,22 +40,38 @@ class DocumentTypeServiceImpl : DocumentTypeService {
 
     override fun save(documentType: DocumentType): DocumentType? {
 
-        if(documentTypeRepository.existsByNameAndDocumentGroupAndStatus(documentType.name,documentType.documentGroup,documentType.status)){
-            return null
+        documentTypeRepository.findByNameAndDocumentGroupAndStatus(
+            documentType.name,
+            documentType.documentGroup,
+            documentType.status
+        )?.let { fetchedDocumentType ->
+            documentType.id.let {
+                if (it != fetchedDocumentType.id) {
+                    return null
+                }
+            }
         }
         return documentTypeRepository.save(documentType)
     }
 
     override fun <T> save(documentType: DocumentType, responseObserver: StreamObserver<T>): DocumentType? {
-        if(documentTypeRepository.existsByNameAndDocumentGroupAndStatus(documentType.name,documentType.documentGroup,documentType.status)){
-            val status = Status.NOT_FOUND.withDescription(
-                Helper.concatenateErrorMessageAndCode(
-                    alreadyExistMessage!!,
-                    alreadyExistCode!!
-                )
-            )
-            responseObserver.onError(StatusException(status))
-            return null
+        documentTypeRepository.findByNameAndDocumentGroupAndStatus(
+            documentType.name,
+            documentType.documentGroup,
+            documentType.status
+        )?.let { fetchedDocumentType ->
+            documentType.id.let {
+                if (it != fetchedDocumentType.id) {
+                    val status = Status.NOT_FOUND.withDescription(
+                        Helper.concatenateErrorMessageAndCode(
+                            alreadyExistMessage!!,
+                            alreadyExistCode!!
+                        )
+                    )
+                    responseObserver.onError(StatusException(status))
+                    return null
+                }
+            }
         }
         return documentTypeRepository.save(documentType)
     }

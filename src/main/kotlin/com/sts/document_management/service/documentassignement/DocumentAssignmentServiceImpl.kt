@@ -1,7 +1,9 @@
 package com.sts.document_management.service.documentassignement
 
 import com.sts.common.utils.Helper
-import com.sts.document_management.constant.ObjectStatus
+
+
+import com.sts.common.constant.ObjectStatus
 import com.sts.document_management.persistence.sql.model.DocumentAssignment
 import com.sts.document_management.persistence.sql.repository.DocumentAssignmentRepository
 import io.grpc.Status
@@ -18,7 +20,7 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
     lateinit var documentAssignmentRepository: DocumentAssignmentRepository
 
     @Value("\${messages.document-assignment-service.already-assigned}")
-    val alreadyAssignedMessage:String? = null
+    val alreadyAssignedMessage: String? = null
 
     @Value("\${codes.document-assignment-service.already-assigned}")
     val alreadyAssignedCode: Int? = null
@@ -36,14 +38,18 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
     val assignmentNotActiveCode: Int? = null
 
     override fun save(documentAssignment: DocumentAssignment): DocumentAssignment? {
-        if (documentAssignmentRepository.existsByDocumentIdAndAssigneeIdAndStatus(
-                documentAssignment.documentId,
-                documentAssignment.assigneeId,
-                documentAssignment.status
-            )
-        ) {
-            return null
+        documentAssignmentRepository.findByDocumentIdAndAssigneeIdAndStatus(
+            documentAssignment.documentId,
+            documentAssignment.assigneeId,
+            documentAssignment.status
+        )?.let { fetchedDocumentAssignment ->
+            documentAssignment.id?.let {
+                if (it != fetchedDocumentAssignment.id) {
+                    return null
+                }
+            }
         }
+
         return documentAssignmentRepository.save(documentAssignment)
     }
 
@@ -51,28 +57,34 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
         documentAssignment: DocumentAssignment,
         responseObserver: StreamObserver<T>
     ): DocumentAssignment? {
-        if (documentAssignmentRepository.existsByDocumentIdAndAssigneeIdAndStatus(
-                documentAssignment.documentId,
-                documentAssignment.assigneeId,
-                documentAssignment.status
-            )
-        ) {
-            val status = Status.NOT_FOUND.withDescription(
-                Helper.concatenateErrorMessageAndCode(
-                    alreadyAssignedMessage!!,
-                    alreadyAssignedCode!!
-                )
-            )
-            responseObserver.onError(StatusException(status))
-            return null
+        documentAssignmentRepository.findByDocumentIdAndAssigneeIdAndStatus(
+            documentAssignment.documentId,
+            documentAssignment.assigneeId,
+            documentAssignment.status
+        )?.let { fetchedDocumentAssignment ->
+            documentAssignment.id?.let {
+                if (it != fetchedDocumentAssignment.id) {
+                    val status = Status.NOT_FOUND.withDescription(
+                        Helper.concatenateErrorMessageAndCode(
+                            alreadyAssignedMessage!!,
+                            alreadyAssignedCode!!
+                        )
+                    )
+                    responseObserver.onError(StatusException(status))
+                    return null
+                }
+            }
         }
         return documentAssignmentRepository.save(documentAssignment)
     }
 
 
-    override fun <T> findActiveDocumentAssignmentById(documentAssignmentId: String, responseObserver: StreamObserver<T>): DocumentAssignment? {
+    override fun <T> findActiveDocumentAssignmentById(
+        documentAssignmentId: String,
+        responseObserver: StreamObserver<T>
+    ): DocumentAssignment? {
         val documentAssignment = documentAssignmentRepository.findById(documentAssignmentId)
-        if (!documentAssignment.isPresent){
+        if (!documentAssignment.isPresent) {
             val status = Status.NOT_FOUND.withDescription(
                 Helper.concatenateErrorMessageAndCode(
                     assignmentNotFoundMessage!!,
@@ -83,7 +95,7 @@ class DocumentAssignmentServiceImpl : DocumentAssignmentService {
             return null
         }
         val fetchedDocumentAssignment = documentAssignment.get()
-        if(fetchedDocumentAssignment.status != ObjectStatus.ACTIVE){
+        if (fetchedDocumentAssignment.status != ObjectStatus.ACTIVE) {
             val status = Status.NOT_FOUND.withDescription(
                 Helper.concatenateErrorMessageAndCode(
                     assignmentNotFoundMessage!!,

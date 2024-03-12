@@ -1,7 +1,9 @@
 package com.sts.document_management
 
 
-import com.sts.document_management.constant.ObjectStatus
+
+
+import com.sts.common.constant.ObjectStatus
 import com.sts.document_management.persistence.sql.repository.DocumentTypeAttributeRepository
 import com.sts.document_management.persistence.sql.repository.DocumentTypeRepository
 import org.junit.jupiter.api.Test

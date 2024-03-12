@@ -26,7 +26,7 @@ class DocumentAssignmentServiceGrpc(private val mapper: Mapper): DocumentAssignm
         val documentType = documentTypeService.getDocumentType(request.documentTypeId,responseObserver) ?: return
         val documentAssignment = mapper.map(request,DocumentAssignment::class)
         documentAssignment.documentType = documentType
-        documentAssignmentService.save(documentAssignment)?:return
+        documentAssignmentService.save(documentAssignment,responseObserver)?:return
         val response = mapper.map(documentAssignment,Documentmanagement.AssignDocumentResponse::class)
         responseObserver.onNext(response)
         responseObserver.onCompleted()

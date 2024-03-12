@@ -1,6 +1,7 @@
 package com.sts.document_management.utils
 
-import com.sts.document_management.constant.ObjectStatus
+
+
 import com.sts.document_management.persistence.sql.model.DocumentAssignment
 import com.sts.document_management.persistence.sql.model.DocumentType
 import com.sts.document_management.persistence.sql.model.DocumentTypeAttribute
